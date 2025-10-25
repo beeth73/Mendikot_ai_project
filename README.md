@@ -1,0 +1,1 @@
+# Mendikot_ai_project
