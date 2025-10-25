@@ -4,7 +4,7 @@
 
 This repository contains the code for **MendikotZero**, an AI agent trained using modern Reinforcement Learning techniques to play the popular Indian card game Mendikot (also known as Mindi). The project chronicles the development from a simple rule-based agent to a sophisticated, planning-capable AI inspired by the AlphaZero architecture.
 
-The entire development process, including debugging, architectural decisions, and performance analysis, was guided by conversations with Google's Gemini.
+The entire development process, including debugging, architectural decisions, and performance analysis, was guided by conversations with Google's Gemini 2.5 Pro.
 
 ---
 
