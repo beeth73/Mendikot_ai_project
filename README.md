@@ -13,7 +13,7 @@ After thousands of simulated games, the MCTS-powered agent demonstrated a clear 
 
 ![AI Performance at 13,000 Episodes](graph.png)
 
-*(Note: To display this image, ensure you have a `graph.png` file in the root of your repository.)*
+
 
 ---
 
