@@ -70,7 +70,8 @@ The development process provided several key insights:
 - Performance is highly dependent on the quality of the game simulation and the richness of the state representation (especially card-counting memory).
 - Evaluation showed a clear learning trend, with the AI evolving from a reckless "gambler" to a more balanced and strategic "grinder" as training progressed.
 
-(main/graph.png)
+(Mendikot_ai_project
+/graph.png)
 
 ## Project Structure
 Mendikot_ai_project/
