@@ -1,150 +1,137 @@
+```markdown
 # MendikotZero: An AI for the Card Game Mendikot
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/beeth73/Mendikot_ai_project/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![Python](https://img.shields.io/badge/python-3.10-blue.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white)
 
-This repository contains the code for **MendikotZero**, an AI agent trained using modern Reinforcement Learning techniques to play the popular Indian card game Mendikot (also known as Mindi). The project chronicles the development from a simple rule-based agent to a sophisticated, planning-capable AI inspired by the AlphaZero architecture.
+This repository contains the code for **MendikotZero**, an AI agent trained using modern Reinforcement Learning techniques to play the popular Indian card game *Mendikot* (also known as *Mindi*). 
 
-The entire development process, including debugging, architectural decisions, and performance analysis, was guided by conversations with Google's Gemini 2.5 Pro.
+The project chronicles the development from a simple rule-based agent to a sophisticated, planning-capable AI inspired by the **AlphaZero architecture**. The entire development process—including debugging, architectural decisions, and performance analysis—was guided by collaborative sessions with Google's Gemini 2.5 Pro.
 
 ---
 
-## Key Learnings & Results
-After thousands of simulated games, the MCTS-powered agent demonstrated a clear and positive learning trend. It evolved from a reckless "gambler" into a more balanced and strategic player, capable of both strong offense and calculated defense. The graph below shows the performance of the agent after 13,000 episodes of training, proving it has learned to consistently achieve high-reward outcomes.
+## 📊 Key Learnings & Results
+
+After thousands of simulated games, the MCTS-powered agent demonstrated a clear and positive learning trend. It evolved from a reckless "gambler" into a balanced and strategic player, capable of both strong offense and calculated defense.
+
+The graph below shows the performance of the agent after **13,000 episodes** of training, proving it has learned to consistently achieve high-reward outcomes against random and heuristic baselines.
 
 ![AI Performance at 13,000 Episodes](graph.png)
-
-
-
----
-
-## Table of Contents
-- [About the Game](#about-the-game)
-- [The AI's Architecture: How it "Thinks"](#the-ais-architecture-how-it-thinks)
-- [How to Use](#how-to-use)
-  - [Training the AI](#training-the-ai)
-  - [Analyzing a Model](#analyzing-a-model)
-  - [Playing with the AI Assistant](#playing-with-the-ai-assistant)
-- [Project Structure](#project-structure)
-- [Setup and Installation](#setup-and-installation)
+*(Note: Ensure 'graph.png' is present in your repository root)*
 
 ---
 
-## About the Game
-Mendikot is a 4-player partnership trick-taking game popular in India. The primary objective is for a team to capture tricks that contain the Tens (10s) of each suit. This implementation uses a 48-card deck and a dynamic trump-declaration rule, where the first player unable to follow suit sets the trump for the round.
+## 📑 Table of Contents
+- [About the Game](#-about-the-game)
+- [The AI's Architecture](#-the-ais-architecture-how-it-thinks)
+- [Project Structure](#-project-structure)
+- [Setup and Installation](#-setup-and-installation)
+- [How to Use](#-how-to-use)
 
 ---
 
-## The AI's Architecture: How it "Thinks"
+## 🃏 About the Game
+**Mendikot** is a 4-player partnership trick-taking game popular in India. The primary objective is for a team to capture tricks that contain the **Tens (10s)** of each suit. 
 
-The final agent, MendikotZero, is not just a simple program. It's a learning system inspired by AlphaZero. Its "thinking" process can be broken down into three core components, much like a human grandmaster.
+This implementation uses:
+*   A 48-card deck (2s removed).
+*   Dynamic trump-declaration rules (the first player unable to follow suit sets the trump for the round).
 
-### Component 1: The Brain (The Neural Network)
-The neural network is the AI's "intuition" or "gut feeling." When it looks at the game, it doesn't calculate every possibility. Instead, it instantly has a sense of the situation. This "brain" has two minds:
+---
 
-1.  **The Policy Head (The Player's Instinct):** This part looks at the cards and the table and instantly suggests a few promising moves. It answers the question: *"What are the 2-3 most logical cards to play right now?"*
+## 🧠 The AI's Architecture: How it "Thinks"
 
-2.  **The Value Head (The Positional Awareness):** This part evaluates the overall game state and predicts the final outcome. It answers the question: *"Based on the cards played and what's in my hand, who is currently winning this game?"*
+MendikotZero is a learning system inspired by DeepMind's AlphaZero. Its decision-making process mimics a human grandmaster, broken down into three core components:
 
-### Component 2: The "Thinking" (Monte Carlo Tree Search - MCTS)
-While the neural network provides intuition, the MCTS provides the deep, conscious "what if?" planning. It simulates future possibilities before making a move.
+### 1. The Brain (Deep Neural Network)
+The neural network provides the AI's "intuition." It doesn't calculate every possibility; it instantly senses the situation using two heads:
+*   **Policy Head (Instinct):** Looks at the cards/table and answers: *"What are the 2-3 most logical cards to play right now?"*
+*   **Value Head (Position):** Evaluates the game state and answers: *"Based on the cards played, who is currently winning?"*
 
-1.  **Selection:** It starts from the current game state and, guided by the neural network's intuition, follows a promising path of moves for a few turns in its "imagination."
-2.  **Expansion:** When it reaches a point it hasn't considered before, it asks the neural network for new intuitive moves from that position.
-3.  **Simulation:** From this new point, it plays out the rest of the game at high speed inside its simulation, using a simpler, faster version of its policy to see who wins.
-4.  **Backpropagation:** It takes the result of that imagined game (a win or a loss) and "backpropagates" that information up the path it took. All the moves that led to the imagined win are reinforced as "good," and all moves that led to a loss are marked as "bad."
+### 2. The Thinking (Monte Carlo Tree Search - MCTS)
+While the network provides intuition, MCTS provides deep, conscious planning.
+1.  **Selection:** Starts from the current state and follows a promising path in its "imagination."
+2.  **Expansion:** When it reaches a new position, it asks the Neural Network for intuitive moves.
+3.  **Simulation:** Plays out the rest of the game in its head to see who wins.
+4.  **Backpropagation:** The result (Win/Loss) reinforces the moves that led there.
 
-By repeating this process hundreds of times per second, the AI builds a detailed "search tree" of possibilities. The move that was reinforced the most as being good is the one it ultimately chooses to play.
-
-### Component 3: The Training (Self-Play & Infinite Practice)
-How does the AI get so good? It practices. A lot.
+### 3. The Training (Self-Play)
 The AI learns entirely from scratch by playing millions of games against itself.
-
-- **The Process:** Four copies of the same AI sit at a table. They play a full game using their MCTS "thinking."
-- **Cooperation Emerges:** At the end of the game, the two agents on the winning team get a positive reward, and the two on the losing team get a negative one. By sharing a brain and a reward, the agents learn cooperative strategies. One agent might learn to sacrifice a high card because it discovers, over thousands of games, that this play helps its partner capture a Mendi later, leading to a higher team reward.
-
-This virtuous cycle—where better search leads to better game data, which trains a better neural network, which in turn leads to an even better search—is what allows the AI to progress from random play to a superhuman level of strategic understanding.
+*   **Process:** Four copies of the AI play a game.
+*   **Cooperation:** Agents on the winning team share a positive reward. This forces the AI to learn **implicit cooperation** (e.g., sacrificing a high card to help a partner capture a '10').
 
 ---
 
-## How to Use
+## 📂 Project Structure
 
-### Training the AI
-The entire training pipeline is contained within `notebooks/train_agent.ipynb`. This notebook is designed to be self-contained.
-
-1.  Set up the environment as described in the [Setup](#setup-and-installation) section.
-2.  Open `notebooks/train_agent.ipynb` in Jupyter.
-3.  Run the cells. Trained models will be saved automatically in the `models/` directory, organized by the timestamp of the training run.
-
-### Analyzing a Model
-The `test_agent.ipynb` notebook is provided to evaluate a trained model.
-
-1.  Open `test_agent.ipynb`.
-2.  Modify the `MODEL_CHECKPOINT_TO_TEST` variable to point to the desired `.pth` file.
-3.  Run the notebook to simulate 500 games and generate a performance graph.
-
-### Playing with the AI Assistant
-The `ai_assistant.py` script allows you to play a real-world game with the AI.
-
-1.  Run the script from your terminal:
-    ```bash
-    python ai_assistant.py
-    ```
-2.  Follow the on-screen prompts. You will provide the AI with its hand and tell it the cards played by human players. The AI will then tell you which card it has decided to play.
-
----
-
-## Project Structure
+```text
 Mendikot_ai_project/
-├── .ipynb_checkpoints/         # Automatic backups for Jupyter notebooks
-├── data/                       # Folder for potential future data storage
-├── models/                     # Saved model checkpoints from training runs
-│   ├── 2025-10-24_20-15-23/
-│   │   ├── mendikot_model_ep_1000.pth
-│   │   ├── mendikot_model_ep_2000.pth
-│   │   └── mendikot_model_ep_3000.pth
-│   └── 2025-10-25_09-10-03/
-│       ├── mendikot_model_ep_1000.pth
-│       ├── ... (and all checkpoints up to)
-│       └── mendikot_model_ep_13000.pth
+├── data/                       # Storage for training logs/data
+├── models/                     # Saved model checkpoints
+│   ├── 2025-10-24_Run/         # Checkpoints from specific training sessions
+│   └── 2025-10-25_Run/
 ├── notebooks/
-│   ├── .ipynb_checkpoints/
-│   └── train_agent.ipynb       # Main notebook for training the AI
+│   └── train_agent.ipynb       # Main training pipeline (Jupyter)
 ├── src/
-│   ├── __pycache__/            # Python's cached bytecode files
-│   ├── .ipynb_checkpoints/
-│   ├── agent.py                # MendikotModel neural network class
-│   ├── cards.py                # Card and deck definitions
-│   ├── game.py                 # The main GameState simulation engine
-│   ├── mcts.py                 # Monte Carlo Tree Search implementation
-│   └── player.py               # Player class structures
-├── .gitignore                  # Tells Git which files to ignore
-├── ai_assistant.py             # Interactive CLI to play with the AI
-├── LICENSE                     # Project license file (MIT)
-├── play_cli.py                 # Fully simulated CLI game
-├── README.md                   # Project documentation (this file)
-├── requirements.txt            # List of Python package dependencies
-└── test_agent.ipynb            # Jupyter notebook for analyzing trained models
-
+│   ├── agent.py                # MendikotModel (Neural Network) class
+│   ├── cards.py                # Card and Deck definitions
+│   ├── game.py                 # GameState simulation engine
+│   ├── mcts.py                 # Monte Carlo Tree Search logic
+│   └── player.py               # Player wrappers
+├── ai_assistant.py             # Interactive CLI to play against the AI
+├── play_cli.py                 # Simulation CLI for debugging
+├── test_agent.ipynb            # Analysis tools for trained models
+├── requirements.txt            # Python dependencies
+└── README.md                   # Documentation
+```
 
 ---
 
-## Setup and Installation
-This project is managed using Anaconda for a stable environment.
+## ⚙️ Setup and Installation
 
-1.  **Create the Conda environment:**
+This project works best with **Conda** to manage dependencies.
+
+1.  **Create the environment:**
     ```bash
     conda create -n mendikot_ai python=3.10
-    ```
-2.  **Activate the environment:**
-    ```bash
     conda activate mendikot_ai
     ```
-3.  **Install Dependencies:**
-    This project uses PyTorch. Install the appropriate (CPU or GPU) version from the [official PyTorch website](https://pytorch.org/get-started/locally/). For a typical CPU setup:
+
+2.  **Install PyTorch:**
+    *Visit [pytorch.org](https://pytorch.org/) to get the command for your specific hardware (CPU vs CUDA).*
     ```bash
+    # Example for CPU-only:
     conda install pytorch torchvision torchaudio cpuonly -c pytorch
     ```
-    Then, install the remaining packages:
+
+3.  **Install Utilities:**
     ```bash
-    conda install numpy pandas tqdm jupyterlab matplotlib seaborn
+    pip install numpy pandas tqdm jupyterlab matplotlib seaborn
     ```
+
+---
+
+## 🚀 How to Use
+
+### 1. Training the AI
+The training loop is self-contained in a Jupyter Notebook for easy visualization.
+*   Open `notebooks/train_agent.ipynb`.
+*   Run all cells. Models will save to the `models/` directory automatically.
+
+### 2. Analyzing Performance
+To see how well a specific model performs:
+*   Open `test_agent.ipynb`.
+*   Update the `MODEL_CHECKPOINT_TO_TEST` path to point to your `.pth` file.
+*   Run the simulation to generate win-rate graphs.
+
+### 3. Playing against the AI
+Want to test the AI yourself? Use the interactive assistant.
+```bash
+python ai_assistant.py
+```
+*Follow the on-screen prompts to input your hand and the table state. The AI will recommend the optimal move.*
+
+---
+**License:** MIT
+```
