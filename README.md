@@ -1,4 +1,3 @@
-```markdown
 # MendikotZero: An AI for the Card Game Mendikot
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -134,4 +133,4 @@ python ai_assistant.py
 
 ---
 **License:** MIT
-```
+
